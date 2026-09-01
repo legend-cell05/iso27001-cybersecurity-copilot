@@ -1,0 +1,89 @@
+# ===========================================================================
+# Catalogue manifest.
+#
+# The version is what a human quotes in a meeting. The fingerprint -- a
+# SHA-256 over the bytes of every file listed here, computed at load time and
+# recorded on every assessment -- is what a machine compares, because two
+# catalogues can carry the same version number and different content, and only
+# one of them is the one that ran.
+#
+# Bump `version` whenever a control's wording, attributes or evidence rules
+# change. The fingerprint changes by itself, which is the point: it cannot be
+# forgotten.
+# ===========================================================================
+version: "1.0.0"
+standard: ISO/IEC 27001:2022
+framework_note: >-
+  Control and clause identifiers reference ISO/IEC 27001:2022. All titles,
+  intents and evidence rules in this catalogue are written for this project.
+  No text from the standard is reproduced. Applying this catalogue to a real
+  certification requires a licensed copy of ISO/IEC 27001 and ISO/IEC 27002.
+
+control_files:
+  - controls/05_organizational.yaml
+  - controls/06_people.yaml
+  - controls/07_physical.yaml
+  - controls/08_technological.yaml
+
+clause_file: clauses.yaml
+
+# The closed vocabularies. A catalogue naming a theme, function or capability
+# that is not listed here fails to load, rather than producing a Statement of
+# Applicability with a category nobody can explain.
+themes:
+  organizational: Controls exercised through how the organisation runs itself.
+  people: Controls that depend on individuals doing something.
+  physical: Controls over premises, equipment and media.
+  technological: Controls implemented in systems.
+
+control_types:
+  preventive: Acts before an incident, to stop it.
+  detective: Acts during, to notice it.
+  corrective: Acts after, to limit and repair it.
+
+properties:
+  C: Confidentiality
+  I: Integrity
+  A: Availability
+
+# The five functions are the NIST Cybersecurity Framework's, used here because
+# they are a widely understood vocabulary for what a control is *for*, and
+# because they are not ISO's.
+functions:
+  identify: Understand what exists and what threatens it.
+  protect: Reduce the chance the thing happens.
+  detect: Notice that it is happening.
+  respond: Act on it.
+  recover: Get back to normal.
+
+# Operational groupings, defined for this project. They are what the posture
+# report aggregates by, because "38% of technological controls" is less useful
+# to a security manager than "identity and access is the weakest capability".
+capabilities:
+  governance: Policy, roles, management direction.
+  asset_management: Knowing what exists and who owns it.
+  identity_and_access: Who can reach what.
+  information_protection: Classification, handling, cryptography, retention.
+  human_resources: Screening, terms, awareness, departures.
+  physical_security: Premises, equipment, environment.
+  network_security: Networks, segregation, filtering.
+  endpoint_security: Devices and what runs on them.
+  secure_development: How software is specified, written and tested.
+  operations: Change, configuration, capacity, procedures.
+  threat_and_vulnerability: Knowing what is coming and what is exposed.
+  detection_and_response: Logging, monitoring, correlation.
+  incident_management: Preparation, handling, learning.
+  continuity: Backup, redundancy, recovery.
+  supplier_management: Third parties and the supply chain.
+  compliance: Legal, regulatory, contractual and internal conformance.
+
+evidence_kinds:
+  policy: An approved statement of intent.
+  procedure: A written way of doing something.
+  record: Proof that something was done, on a date, by someone.
+  log: Machine-generated, time-ordered, high volume.
+  report: An analysis, usually periodic.
+  screenshot: A configuration as it stood when it was captured.
+  ticket: A tracked unit of work with a history.
+  certificate: An attestation issued by someone else.
+  contract: A binding agreement with a third party.
