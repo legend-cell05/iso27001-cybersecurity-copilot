@@ -1,0 +1,474 @@
+# ===========================================================================
+# Annex A theme 5 -- organizational controls (A.5.1 to A.5.37).
+#
+# The identifiers reference ISO/IEC 27001:2022 Annex A. The titles and intents
+# below are written for this project and are NOT the text of the standard; see
+# docs/catalogue.md. Using this catalogue for a real certification still
+# requires a licensed copy of ISO/IEC 27001 and ISO/IEC 27002.
+#
+# `evidence_valid_days` is how long a piece of evidence keeps supporting this
+# control. It is per control on purpose: an access review is stale after six
+# months, an approved policy is not.
+# ===========================================================================
+theme: organizational
+controls:
+  - id: A.5.1
+    title: Information security policy set
+    intent: >-
+      Management approves a set of security policies, publishes them where
+      staff can find them, and reviews them on a planned interval or after a
+      significant change.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: governance
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.2
+    title: Defined security roles and responsibilities
+    intent: >-
+      Every security responsibility is allocated to a named role, so that no
+      part of the ISMS depends on somebody informally remembering to do it.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: governance
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.3
+    title: Segregation of conflicting duties
+    intent: >-
+      Duties that would let one person both commit and conceal an error or a
+      fraud are split between different people or compensated by review.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.4
+    title: Management expectations of personnel
+    intent: >-
+      Management requires staff and contractors to apply the organisation's
+      security rules, and says so in terms that can be pointed at later.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: governance
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.5
+    title: Contact with authorities
+    intent: >-
+      The organisation knows who it must notify -- regulator, data
+      protection authority, law enforcement -- and holds current contact
+      details before it needs them.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: respond
+    capability: incident_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.6
+    title: Contact with security communities
+    intent: >-
+      The organisation maintains a working relationship with specialist
+      groups and forums so that advisories reach it before incidents do.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: identify
+    capability: threat_and_vulnerability
+    evidence_expected: [record]
+    evidence_valid_days: 365
+
+  - id: A.5.7
+    title: Threat intelligence
+    intent: >-
+      Information about threats relevant to this organisation is collected,
+      analysed and turned into decisions, rather than subscribed to and
+      ignored.
+    control_types: [preventive, detective, corrective]
+    properties: [C, I, A]
+    function: identify
+    capability: threat_and_vulnerability
+    evidence_expected: [report, record]
+    evidence_valid_days: 90
+
+  - id: A.5.8
+    title: Security in project management
+    intent: >-
+      Security requirements are identified and addressed in projects, at a
+      point where changing the design is still cheap.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: secure_development
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.9
+    title: Inventory of information and associated assets
+    intent: >-
+      The organisation keeps a current inventory of its information and the
+      things that process it, each with an owner, because an unlisted asset
+      is an unprotected one.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: asset_management
+    evidence_expected: [record]
+    evidence_valid_days: 180
+
+  - id: A.5.10
+    title: Acceptable use of assets
+    intent: >-
+      Rules for the acceptable use and handling of information and assets
+      are written down and communicated to the people who have to follow
+      them.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: asset_management
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.11
+    title: Return of assets on departure
+    intent: >-
+      Staff, contractors and suppliers return the assets they hold when
+      their engagement ends, and the return is recorded.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: asset_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.12
+    title: Classification of information
+    intent: >-
+      Information is classified by what it would cost the organisation if it
+      were disclosed, altered or lost, using a scheme people can actually
+      apply.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: information_protection
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.13
+    title: Labelling of information
+    intent: >-
+      Classified information carries its classification, so that the
+      handling rules can be followed by someone who did not create it.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: information_protection
+    evidence_expected: [procedure, screenshot]
+    evidence_valid_days: 365
+
+  - id: A.5.14
+    title: Rules for transferring information
+    intent: >-
+      Transfers of information inside the organisation and to outside
+      parties follow rules matched to the classification of what is being
+      sent.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: information_protection
+    evidence_expected: [policy, procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.15
+    title: Access control policy
+    intent: >-
+      Access to information and systems is granted on the basis of business
+      need and the classification of what is being accessed, under a written
+      rule rather than case by case.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.16
+    title: Identity lifecycle
+    intent: >-
+      Identities are created, changed and removed through a controlled
+      process, so that an account always belongs to someone who still exists
+      and still needs it.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 180
+
+  - id: A.5.17
+    title: Handling of authentication secrets
+    intent: >-
+      Passwords, keys and tokens are allocated, distributed and changed
+      through a process that does not itself expose them.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.18
+    title: Provisioning and review of access rights
+    intent: >-
+      Access rights are granted, changed and revoked in line with the access
+      control policy, and reviewed often enough that leavers and movers do
+      not keep what they had.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [record, report]
+    evidence_valid_days: 180
+
+  - id: A.5.19
+    title: Security in supplier relationships
+    intent: >-
+      The organisation decides and documents how it manages the security
+      risk that comes with using suppliers, before it depends on one.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: supplier_management
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.20
+    title: Security terms in supplier agreements
+    intent: >-
+      The security requirements a supplier must meet are written into the
+      agreement, where they can be enforced.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: supplier_management
+    evidence_expected: [contract, record]
+    evidence_valid_days: 365
+
+  - id: A.5.21
+    title: Security in the ICT supply chain
+    intent: >-
+      Risks arriving through the products and services an organisation buys
+      -- including its suppliers' own suppliers -- are managed rather than
+      assumed away.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: supplier_management
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.5.22
+    title: Monitoring and change management of supplier services
+    intent: >-
+      Supplier service delivery is monitored and reviewed, and changes to it
+      are managed, so that a quiet degradation is noticed before it becomes
+      an incident.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: identify
+    capability: supplier_management
+    evidence_expected: [report, record]
+    evidence_valid_days: 180
+
+  - id: A.5.23
+    title: Security for cloud services
+    intent: >-
+      Acquiring, using and leaving a cloud service follows a defined
+      process, including what happens to the data on the way out.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: supplier_management
+    evidence_expected: [policy, contract, record]
+    evidence_valid_days: 365
+
+  - id: A.5.24
+    title: Incident management planning
+    intent: >-
+      Roles, procedures and escalation paths for handling security incidents
+      are defined and communicated before an incident is under way.
+    control_types: [corrective]
+    properties: [C, I, A]
+    function: respond
+    capability: incident_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.25
+    title: Assessment of security events
+    intent: >-
+      Reported events are assessed against defined criteria and classified
+      as incidents or not, by someone with the authority to decide.
+    control_types: [detective, corrective]
+    properties: [C, I, A]
+    function: detect
+    capability: incident_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 180
+
+  - id: A.5.26
+    title: Response to security incidents
+    intent: >-
+      Incidents are responded to according to the documented procedure, and
+      what was done is recorded while it is still remembered.
+    control_types: [corrective]
+    properties: [C, I, A]
+    function: respond
+    capability: incident_management
+    evidence_expected: [record, ticket]
+    evidence_valid_days: 180
+
+  - id: A.5.27
+    title: Learning from incidents
+    intent: >-
+      What incidents reveal is fed back into controls and procedures, so the
+      same incident does not have to happen twice to be worth something.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: recover
+    capability: incident_management
+    evidence_expected: [report, record]
+    evidence_valid_days: 365
+
+  - id: A.5.28
+    title: Collection of evidence
+    intent: >-
+      Evidence about an incident is identified, collected and preserved in a
+      way that survives being looked at later by somebody who was not there.
+    control_types: [corrective]
+    properties: [C, I, A]
+    function: respond
+    capability: incident_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.29
+    title: Security during disruption
+    intent: >-
+      The organisation plans how it will keep security at an adequate level
+      during a disruption, rather than discovering that continuity and
+      security pull against each other mid-crisis.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: protect
+    capability: continuity
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.5.30
+    title: ICT readiness for business continuity
+    intent: >-
+      ICT continuity requirements come from the business continuity
+      objectives, and the arrangements that meet them are planned,
+      implemented and tested.
+    control_types: [corrective]
+    properties: [A]
+    function: recover
+    capability: continuity
+    evidence_expected: [report, record]
+    evidence_valid_days: 365
+
+  - id: A.5.31
+    title: Legal, regulatory and contractual requirements
+    intent: >-
+      The security requirements the organisation is legally or contractually
+      bound by are identified, documented and kept current.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: compliance
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.5.32
+    title: Intellectual property rights
+    intent: >-
+      The organisation meets its obligations around intellectual property,
+      including the licences of the software it runs.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: compliance
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.5.33
+    title: Protection of records
+    intent: >-
+      Records are protected against loss, destruction, falsification and
+      unauthorised access for as long as they must be kept.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: information_protection
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.5.34
+    title: Privacy and protection of personal data
+    intent: >-
+      Requirements for the protection of personal data are identified and
+      met, in line with the law that applies to the organisation.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: compliance
+    evidence_expected: [policy, record, report]
+    evidence_valid_days: 365
+
+  - id: A.5.35
+    title: Independent review of information security
+    intent: >-
+      The organisation's approach to security is reviewed independently at
+      planned intervals and when something significant changes.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: identify
+    capability: compliance
+    evidence_expected: [report, record]
+    evidence_valid_days: 365
+
+  - id: A.5.36
+    title: Conformance with the organisation's own rules
+    intent: >-
+      Compliance with the organisation's own policies and standards is
+      checked regularly, because a policy nobody verifies is a document
+      rather than a control.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: identify
+    capability: compliance
+    evidence_expected: [report, record]
+    evidence_valid_days: 180
+
+  - id: A.5.37
+    title: Documented operating procedures
+    intent: >-
+      The procedures for operating information processing facilities are
+      written down and available to the people who need them, including at
+      three in the morning.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
