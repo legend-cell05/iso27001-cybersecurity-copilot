@@ -1,0 +1,182 @@
+# ===========================================================================
+# Annex A theme 7 -- physical controls (A.7.1 to A.7.14).
+#
+# The identifiers reference ISO/IEC 27001:2022 Annex A. The titles and intents
+# below are written for this project and are NOT the text of the standard; see
+# docs/catalogue.md.
+#
+# Physical controls are the ones an organisation with a cloud-only scope is
+# most tempted to exclude wholesale. Some exclusions are legitimate; each
+# still needs its own justification in the Statement of Applicability.
+# ===========================================================================
+theme: physical
+controls:
+  - id: A.7.1
+    title: Physical security perimeters
+    intent: >-
+      Perimeters are defined and used to protect the areas that hold
+      information and information processing facilities.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record, screenshot]
+    evidence_valid_days: 365
+
+  - id: A.7.2
+    title: Physical entry controls
+    intent: >-
+      Secure areas are protected by entry controls that let the right people
+      in and keep a record of who went where.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record, log]
+    evidence_valid_days: 180
+
+  - id: A.7.3
+    title: Securing offices and facilities
+    intent: >-
+      Physical security is designed into offices, rooms and facilities
+      rather than added after a break-in.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record]
+    evidence_valid_days: 365
+
+  - id: A.7.4
+    title: Physical security monitoring
+    intent: >-
+      Premises are monitored for unauthorised physical access, continuously
+      enough that an intrusion is noticed while it matters.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: detect
+    capability: physical_security
+    evidence_expected: [log, record]
+    evidence_valid_days: 90
+
+  - id: A.7.5
+    title: Protection against physical and environmental threats
+    intent: >-
+      Protection is in place against fire, flood, power failure and the
+      other environmental threats the sites actually face.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [report, record]
+    evidence_valid_days: 365
+
+  - id: A.7.6
+    title: Working in secure areas
+    intent: >-
+      Rules for working inside secure areas are defined and applied,
+      including what may be taken in and out.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.7.7
+    title: Clear desk and clear screen
+    intent: >-
+      Papers, removable media and unlocked screens do not sit unattended
+      where they can be read by whoever walks past.
+    control_types: [preventive]
+    properties: [C]
+    function: protect
+    capability: physical_security
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.7.8
+    title: Siting and protection of equipment
+    intent: >-
+      Equipment is placed and protected so that environmental conditions and
+      casual access do not compromise it.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record, screenshot]
+    evidence_valid_days: 365
+
+  - id: A.7.9
+    title: Security of assets off the premises
+    intent: >-
+      Assets taken off site are protected, taking account of the different
+      risks outside the organisation's own walls.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: asset_management
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.7.10
+    title: Storage media
+    intent: >-
+      Removable and fixed storage media are managed through their whole life
+      -- acquisition, use, transport, disposal -- according to what they
+      hold.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: information_protection
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.7.11
+    title: Supporting utilities
+    intent: >-
+      Information processing facilities are protected against failures of
+      the power, cooling and communications they depend on.
+    control_types: [preventive, detective]
+    properties: [A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.7.12
+    title: Cabling security
+    intent: >-
+      Power and data cabling is protected from interception, interference
+      and damage.
+    control_types: [preventive]
+    properties: [C, A]
+    function: protect
+    capability: physical_security
+    evidence_expected: [record, screenshot]
+    evidence_valid_days: 365
+
+  - id: A.7.13
+    title: Equipment maintenance
+    intent: >-
+      Equipment is maintained correctly so that availability and integrity
+      are not lost to something as ordinary as a worn part.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [record, ticket]
+    evidence_valid_days: 365
+
+  - id: A.7.14
+    title: Secure disposal or re-use of equipment
+    intent: >-
+      Equipment holding storage media is verified to have had its data
+      removed before it is disposed of or given to someone else.
+    control_types: [preventive]
+    properties: [C]
+    function: protect
+    capability: information_protection
+    evidence_expected: [record, certificate]
+    evidence_valid_days: 365
+

@@ -1,0 +1,424 @@
+# ===========================================================================
+# Annex A theme 8 -- technological controls (A.8.1 to A.8.34).
+#
+# The identifiers reference ISO/IEC 27001:2022 Annex A. The titles and intents
+# below are written for this project and are NOT the text of the standard; see
+# docs/catalogue.md.
+#
+# The shortest evidence lifetimes in the catalogue are here: a malware
+# protection screenshot from a year ago says nothing about today.
+# ===========================================================================
+theme: technological
+controls:
+  - id: A.8.1
+    title: User endpoint devices
+    intent: >-
+      Information stored on, processed by or reachable from user endpoints
+      is protected, including when the endpoint leaves the building.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: endpoint_security
+    evidence_expected: [policy, screenshot, report]
+    evidence_valid_days: 180
+
+  - id: A.8.2
+    title: Privileged access rights
+    intent: >-
+      Privileged access is restricted, granted through a controlled process
+      and reviewed, because it is the access an attacker wants.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [record, report]
+    evidence_valid_days: 180
+
+  - id: A.8.3
+    title: Restriction of information access
+    intent: >-
+      Access to information and application functions is restricted in line
+      with the access control policy, and enforced by the systems
+      themselves.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [screenshot, record]
+    evidence_valid_days: 180
+
+  - id: A.8.4
+    title: Access to source code
+    intent: >-
+      Read and write access to source code, development tools and libraries
+      is managed, so the build cannot be changed by whoever finds it.
+    control_types: [preventive]
+    properties: [C, I]
+    function: protect
+    capability: secure_development
+    evidence_expected: [screenshot, record]
+    evidence_valid_days: 180
+
+  - id: A.8.5
+    title: Secure authentication
+    intent: >-
+      Authentication is implemented with technologies and procedures matched
+      to the sensitivity of what is behind it, including multi-factor where
+      it is warranted.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [screenshot, policy]
+    evidence_valid_days: 180
+
+  - id: A.8.6
+    title: Capacity management
+    intent: >-
+      Resource use is monitored and projected, so that capacity is added
+      before an outage announces the need.
+    control_types: [preventive, detective]
+    properties: [A]
+    function: protect
+    capability: operations
+    evidence_expected: [report, log]
+    evidence_valid_days: 180
+
+  - id: A.8.7
+    title: Protection against malware
+    intent: >-
+      Malware protection is implemented and supported by user awareness, on
+      every platform that can carry it.
+    control_types: [preventive, detective, corrective]
+    properties: [C, I, A]
+    function: protect
+    capability: endpoint_security
+    evidence_expected: [screenshot, report]
+    evidence_valid_days: 90
+
+  - id: A.8.8
+    title: Management of technical vulnerabilities
+    intent: >-
+      Vulnerabilities in the systems in use are found, assessed against
+      their exposure, and remediated on a timescale that reflects the risk.
+    control_types: [preventive, detective, corrective]
+    properties: [C, I, A]
+    function: identify
+    capability: threat_and_vulnerability
+    evidence_expected: [report, ticket, record]
+    evidence_valid_days: 90
+
+  - id: A.8.9
+    title: Configuration management
+    intent: >-
+      Secure configurations for hardware, software and networks are defined,
+      applied and monitored for drift.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [record, report]
+    evidence_valid_days: 180
+
+  - id: A.8.10
+    title: Information deletion
+    intent: >-
+      Information is deleted when it is no longer required, so that
+      retention is a decision rather than the default.
+    control_types: [preventive]
+    properties: [C]
+    function: protect
+    capability: information_protection
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.8.11
+    title: Data masking
+    intent: >-
+      Masking, pseudonymisation or anonymisation is used where the full data
+      is not needed, in line with the access control policy and the law.
+    control_types: [preventive]
+    properties: [C]
+    function: protect
+    capability: information_protection
+    evidence_expected: [screenshot, record]
+    evidence_valid_days: 365
+
+  - id: A.8.12
+    title: Data leakage prevention
+    intent: >-
+      Measures are applied to systems and networks that handle sensitive
+      information to detect and stop it leaving where it should not.
+    control_types: [preventive, detective]
+    properties: [C]
+    function: protect
+    capability: information_protection
+    evidence_expected: [screenshot, report]
+    evidence_valid_days: 180
+
+  - id: A.8.13
+    title: Information backup
+    intent: >-
+      Backups are taken according to an agreed policy and -- the part that
+      is usually missing -- restored on a schedule to prove they work.
+    control_types: [corrective]
+    properties: [I, A]
+    function: recover
+    capability: continuity
+    evidence_expected: [record, report]
+    evidence_valid_days: 180
+
+  - id: A.8.14
+    title: Redundancy of processing facilities
+    intent: >-
+      Processing facilities are implemented with enough redundancy to meet
+      the availability the business has asked for.
+    control_types: [preventive]
+    properties: [A]
+    function: protect
+    capability: continuity
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.8.15
+    title: Logging
+    intent: >-
+      Logs of activities, exceptions and security events are produced, kept
+      and protected from alteration.
+    control_types: [detective]
+    properties: [C, I, A]
+    function: detect
+    capability: detection_and_response
+    evidence_expected: [log, screenshot]
+    evidence_valid_days: 90
+
+  - id: A.8.16
+    title: Monitoring activities
+    intent: >-
+      Networks, systems and applications are monitored for anomalous
+      behaviour, and what is found is acted on.
+    control_types: [detective, corrective]
+    properties: [C, I, A]
+    function: detect
+    capability: detection_and_response
+    evidence_expected: [log, report]
+    evidence_valid_days: 90
+
+  - id: A.8.17
+    title: Clock synchronisation
+    intent: >-
+      System clocks are synchronised to an approved time source, because
+      logs from machines that disagree about the time cannot be correlated.
+    control_types: [detective]
+    properties: [I]
+    function: protect
+    capability: detection_and_response
+    evidence_expected: [screenshot, record]
+    evidence_valid_days: 365
+
+  - id: A.8.18
+    title: Use of privileged utility programs
+    intent: >-
+      Utility programs able to override system and application controls are
+      restricted and their use is logged.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: identity_and_access
+    evidence_expected: [screenshot, log]
+    evidence_valid_days: 180
+
+  - id: A.8.19
+    title: Software on operational systems
+    intent: >-
+      Installing software on production systems follows a controlled
+      procedure, so that what runs there is what was reviewed.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 180
+
+  - id: A.8.20
+    title: Network security
+    intent: >-
+      Networks and network devices are secured, managed and controlled to
+      protect the information crossing them.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: protect
+    capability: network_security
+    evidence_expected: [record, screenshot]
+    evidence_valid_days: 180
+
+  - id: A.8.21
+    title: Security of network services
+    intent: >-
+      The security mechanisms, service levels and management requirements of
+      network services are identified and included in agreements.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: protect
+    capability: network_security
+    evidence_expected: [contract, record]
+    evidence_valid_days: 365
+
+  - id: A.8.22
+    title: Segregation of networks
+    intent: >-
+      Groups of services, users and systems are separated on the network, so
+      that reaching one does not mean reaching all.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: network_security
+    evidence_expected: [record, screenshot]
+    evidence_valid_days: 365
+
+  - id: A.8.23
+    title: Web filtering
+    intent: >-
+      Access to external websites is managed to reduce exposure to malicious
+      content.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: network_security
+    evidence_expected: [screenshot, report]
+    evidence_valid_days: 180
+
+  - id: A.8.24
+    title: Use of cryptography
+    intent: >-
+      Rules for the effective use of cryptography, including key management,
+      are defined and implemented -- keys being the part that quietly goes
+      wrong.
+    control_types: [preventive]
+    properties: [C, I]
+    function: protect
+    capability: information_protection
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.8.25
+    title: Secure development lifecycle
+    intent: >-
+      Rules for developing software and systems securely are established and
+      applied across the lifecycle, not bolted on at the end.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: secure_development
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.8.26
+    title: Application security requirements
+    intent: >-
+      Security requirements for applications are identified, specified and
+      approved when the application is specified.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: secure_development
+    evidence_expected: [record]
+    evidence_valid_days: 365
+
+  - id: A.8.27
+    title: Secure architecture and engineering principles
+    intent: >-
+      Principles for engineering secure systems are established, documented
+      and applied to the systems being built.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: secure_development
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.8.28
+    title: Secure coding
+    intent: >-
+      Secure coding principles are applied in development, supported by
+      review and tooling rather than by good intentions.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: secure_development
+    evidence_expected: [record, report]
+    evidence_valid_days: 180
+
+  - id: A.8.29
+    title: Security testing in development and acceptance
+    intent: >-
+      Security testing is defined and carried out during development and
+      before acceptance, with the results recorded.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: identify
+    capability: secure_development
+    evidence_expected: [report, record]
+    evidence_valid_days: 180
+
+  - id: A.8.30
+    title: Outsourced development
+    intent: >-
+      Outsourced development is directed, monitored and reviewed, because
+      the organisation still owns the risk in code it did not write.
+    control_types: [preventive, detective]
+    properties: [C, I, A]
+    function: protect
+    capability: supplier_management
+    evidence_expected: [contract, report]
+    evidence_valid_days: 365
+
+  - id: A.8.31
+    title: Separation of environments
+    intent: >-
+      Development, test and production environments are separated and
+      secured, so that test data and test changes stay out of production.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [screenshot, record]
+    evidence_valid_days: 365
+
+  - id: A.8.32
+    title: Change management
+    intent: >-
+      Changes to information processing facilities and systems go through a
+      change control procedure that records what changed and who approved
+      it.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: operations
+    evidence_expected: [record, ticket]
+    evidence_valid_days: 180
+
+  - id: A.8.33
+    title: Test information
+    intent: >-
+      Test information is selected, protected and managed -- production data
+      copied into a test system is production data.
+    control_types: [preventive]
+    properties: [C, I]
+    function: protect
+    capability: secure_development
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.8.34
+    title: Protection during audit testing
+    intent: >-
+      Audit tests on operational systems are planned and agreed so that the
+      audit itself does not cause the incident.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: compliance
+    evidence_expected: [record, procedure]
+    evidence_valid_days: 365
+
