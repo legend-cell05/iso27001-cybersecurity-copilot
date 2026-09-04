@@ -26,7 +26,7 @@ from sentinel.assessment.engine import (
     run_assessment,
 )
 from sentinel.catalogue import get_catalogue
-from sentinel.config import get_settings
+from sentinel.config import Settings, get_settings
 from sentinel.db.engine import check_connection
 from sentinel.db.schema import schema_exists
 from sentinel.exceptions import SentinelError
@@ -35,8 +35,15 @@ from sentinel.logging_config import configure_logging, get_logger
 logger = get_logger(__name__)
 
 
-def create_app() -> FastAPI:
-    settings = get_settings()
+def create_app(settings: Settings | None = None) -> FastAPI:
+    """Build the application.
+
+    ``settings`` is an argument rather than a global lookup so that a test can
+    point the API at its own schema. Everything the routes read is closed over
+    here, which also means the process does not re-read the environment on
+    every request.
+    """
+    settings = settings or get_settings()
     configure_logging(settings.log_level, settings.log_format)
 
     app = FastAPI(
