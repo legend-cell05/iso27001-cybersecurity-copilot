@@ -253,7 +253,9 @@ def render_soa_csv(assessment: Assessment, snapshot: RegisterSnapshot) -> str:
                 "" if state is None or state.implemented_on is None else state.implemented_on,
                 fresh.get("count", 0),
                 fresh.get("newest") or "",
-                "yes" if fresh.get("stale") else "no",
+                # Blank rather than "yes" when there is no evidence: a control
+                # with nothing on file is unevidenced, not stale.
+                ("yes" if fresh.get("stale") else "no") if fresh.get("count") else "",
                 " ".join(treated.get(control.id, [])),
                 _justification(control.id, state, treated).replace("\n", " "),
             ]
