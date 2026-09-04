@@ -845,7 +845,11 @@ def _evidence(
                 superseded_on=None,
             )
         )
-        if rng.random() < 0.35:
+        # The mismatch defect needs to stay a mismatch: a second artefact of
+        # an expected kind would satisfy the rule and quietly remove the gap.
+        if rng.random() < 0.35 and not (
+            profile == "gaps" and control.id == WRONG_EVIDENCE_KIND_CONTROL
+        ):
             second = control.evidence_expected[-1]
             items.append(
                 Evidence(
