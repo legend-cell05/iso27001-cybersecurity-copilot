@@ -1,0 +1,452 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Static analysis -- fast, no database, fails the pipeline early.
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint and type-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Ruff (lint)
+        run: python -m ruff check --output-format=github .
+
+      - name: Ruff (format)
+        run: python -m ruff format --check .
+
+      - name: mypy
+        run: python -m mypy
+
+  # ---------------------------------------------------------------------------
+  # 2. The catalogue is configuration that decides what an audit is measured
+  #    against, so it gets its own gate: it must load, cover Annex A
+  #    completely, and stay inside the vocabularies it declares.
+  # ---------------------------------------------------------------------------
+  catalogue:
+    name: Validate the control catalogue
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Load it, and check Annex A is complete
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+
+          from sentinel.catalogue import load_catalogue
+
+          catalogue = load_catalogue(Path("catalogue"))
+          expected = {"organizational": 37, "people": 8, "physical": 14, "technological": 34}
+
+          problems = []
+          for theme, count in expected.items():
+              found = len(catalogue.by_theme(theme))
+              if found != count:
+                  problems.append(f"{theme}: expected {count} controls, found {found}")
+
+          # A gap in the numbering is a control somebody forgot to write, and
+          # it would surface as a missing row in a Statement of Applicability.
+          for theme, prefix, last in (
+              ("organizational", "A.5.", 37),
+              ("people", "A.6.", 8),
+              ("physical", "A.7.", 14),
+              ("technological", "A.8.", 34),
+          ):
+              found = {control.id for control in catalogue.by_theme(theme)}
+              missing = sorted({f"{prefix}{n}" for n in range(1, last + 1)} - found)
+              if missing:
+                  problems.append(f"{theme}: missing {', '.join(missing)}")
+
+          if problems:
+              print("\n".join(problems)); sys.exit(1)
+          print(f"catalogue {catalogue.version}: {len(catalogue.controls)} controls, "
+                f"{len(catalogue.requirements)} clause requirements "
+                f"({len(catalogue.mandatory_requirements)} mandatory)")
+          print(f"fingerprint {catalogue.fingerprint}")
+          PY
+
+      - name: No text of the standard may be committed
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+
+          from sentinel.catalogue import load_catalogue
+
+          # The catalogue references ISO/IEC 27001:2022 identifiers and carries
+          # wording written for this project. This check is a tripwire for the
+          # obvious way that could stop being true: a control whose "intent"
+          # was pasted from the standard would read like the standard, which
+          # among other things means it would start with "The organisation
+          # shall".
+          catalogue = load_catalogue(Path("catalogue"))
+          banned = ("shall be ", "the organization shall", "the organisation shall")
+          offenders = [
+              control.id
+              for control in catalogue.controls
+              if any(phrase in control.intent.lower() for phrase in banned)
+          ]
+          if offenders:
+              print("wording that looks copied from the standard: " + ", ".join(offenders))
+              sys.exit(1)
+          if "No text from the standard is reproduced" not in catalogue.framework_note:
+              print("the catalogue manifest must state the copyright position"); sys.exit(1)
+          print("copyright position stated; no control intent reads like the standard")
+          PY
+
+      - name: The catalogue tests
+        run: python -m pytest tests/unit/test_catalogue.py -v
+
+  # ---------------------------------------------------------------------------
+  # 3. Tests -- unit tests on every supported Python, integration tests against
+  #    a real PostgreSQL service container. The CHECK constraints and the
+  #    partial unique index are the thing under test; a mock would agree with
+  #    whatever the code did.
+  # ---------------------------------------------------------------------------
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: sentinel_test
+          POSTGRES_USER: sentinel_app
+          # Test-only credential for an ephemeral container destroyed with the
+          # job and unreachable from outside the runner.
+          POSTGRES_PASSWORD: ci_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sentinel_app -d sentinel_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      SENTINEL_DB_HOST: localhost
+      SENTINEL_DB_PORT: 5432
+      SENTINEL_DB_NAME: sentinel_test
+      SENTINEL_DB_USER: sentinel_app
+      SENTINEL_DB_PASSWORD: ci_test_password
+      SENTINEL_RUN_INTEGRATION: "1"
+      SENTINEL_LOG_LEVEL: WARNING
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Unit tests
+        run: python -m pytest tests/unit -v --junitxml=junit-unit.xml
+
+      - name: Integration tests
+        run: python -m pytest tests/integration -v --junitxml=junit-integration.xml
+
+      - name: Coverage
+        if: matrix.python-version == '3.12'
+        run: python -m pytest tests --cov --cov-report=xml --cov-report=term-missing
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: |
+            junit-*.xml
+            coverage.xml
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # 4. End-to-end -- the whole lifecycle on both demo profiles, asserting the
+  #    properties this project claims: the gate refuses an ISMS with gaps with
+  #    exit code 3, passes the remediated one, and the documents it writes
+  #    cover every Annex A control.
+  # ---------------------------------------------------------------------------
+  assessment:
+    name: End-to-end assessment
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [lint, catalogue]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: sentinel
+          POSTGRES_USER: sentinel_app
+          POSTGRES_PASSWORD: ci_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sentinel_app -d sentinel"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      SENTINEL_DB_HOST: localhost
+      SENTINEL_DB_PORT: 5432
+      SENTINEL_DB_NAME: sentinel
+      SENTINEL_DB_USER: sentinel_app
+      SENTINEL_DB_PASSWORD: ci_test_password
+      SENTINEL_LOG_LEVEL: INFO
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Configuration and connectivity
+        run: sentinel doctor
+
+      - name: Seed the simulated organisation, mid-programme
+        run: |
+          sentinel init-db
+          sentinel demo --profile gaps
+
+      - name: An ISMS with gaps must be refused, with exit code 3
+        run: |
+          set +e
+          sentinel readiness
+          code=$?
+          set -e
+          # 3 is "not ready", not "crashed". A pipeline running this nightly
+          # has to be able to tell the difference without parsing text.
+          if [ "$code" -ne 3 ]; then
+            echo "expected exit code 3 (not ready), got $code"; exit 1
+          fi
+          echo "the gate refused, as designed"
+
+      - name: Every planted defect must be found
+        run: |
+          python - <<'PY'
+          import sys
+
+          from sentinel.assessment.engine import run_assessment
+          from sentinel.demo import TODAY
+
+          assessment = run_assessment(today=TODAY)
+          fired = {finding.rule for finding in assessment.findings}
+          expected = {
+              "CONTROL_NOT_ASSESSED",
+              "CONTROL_NOT_IMPLEMENTED",
+              "CONTROL_WITHOUT_EVIDENCE",
+              "EVIDENCE_STALE",
+              "EVIDENCE_KIND_MISMATCH",
+              "EXCLUSION_WEAKLY_JUSTIFIED",
+              "EXCLUDED_CONTROL_TREATS_A_RISK",
+              "RISK_NAMES_UNKNOWN_CONTROL",
+              "RISK_MODIFIED_BY_NOTHING",
+              "RISK_TREATED_BY_UNIMPLEMENTED_CONTROL",
+              "RISK_ABOVE_APPETITE_UNACCEPTED",
+              "ACCEPTANCE_STALE_AFTER_RESCORING",
+              "ACCEPTANCE_EXPIRED",
+              "HIGH_RISK_ACCEPTED_BELOW_MANAGEMENT",
+              "CLAUSE_REQUIREMENT_UNMET",
+              "MANAGEMENT_ACTIVITY_NEVER_PERFORMED",
+              "MANAGEMENT_ACTIVITY_OVERDUE",
+          }
+          missing = sorted(expected - fired)
+          if missing:
+              print("planted and not found: " + ", ".join(missing)); sys.exit(1)
+          print(f"{len(assessment.findings)} findings from {len(fired)} rules; "
+                f"{assessment.blocking} blocking")
+          PY
+
+      - name: Write the documents and check the SoA covers Annex A
+        run: |
+          sentinel export
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+
+          from sentinel.catalogue import get_catalogue
+
+          catalogue = get_catalogue()
+          soa = max(Path("data/exports").glob("soa-*.md"), key=lambda p: p.stat().st_mtime)
+          body = soa.read_text(encoding="utf-8")
+          missing = [c.id for c in catalogue.controls if f"| {c.id} |" not in body]
+          if missing:
+              print(f"{soa.name} omits: " + ", ".join(missing)); sys.exit(1)
+          # An SoA is built by walking the catalogue, so a control nobody
+          # decided about appears as a gap rather than as an absence.
+          if "not decided" not in body:
+              print("the undecided control is missing from the SoA"); sys.exit(1)
+          print(f"{soa.name}: all {len(catalogue.controls)} controls present, "
+                f"{len(body.splitlines())} lines")
+          PY
+
+      - name: The exports must be recorded with their hashes
+        run: |
+          python - <<'PY'
+          import sys
+
+          from sqlalchemy import text
+
+          from sentinel.config import get_settings
+          from sentinel.db.engine import get_engine
+
+          settings = get_settings()
+          with get_engine(settings).connect() as conn:
+              rows = conn.execute(
+                  text(f"SELECT kind, content_hash FROM {settings.schema_name}.export")
+              ).mappings().all()
+          kinds = {row["kind"] for row in rows}
+          if not {"soa", "risk_treatment_plan", "findings", "audit_dossier"} <= kinds:
+              print(f"missing exports: {kinds}"); sys.exit(1)
+          if not all(len(row["content_hash"]) == 64 for row in rows):
+              print("an export was recorded without a usable hash"); sys.exit(1)
+          print(f"{len(rows)} exports recorded, each with its SHA-256")
+          PY
+
+      - name: Forcing readiness requires a reason and is recorded
+        run: |
+          set +e
+          sentinel readiness --force
+          code=$?
+          set -e
+          if [ "$code" -ne 3 ]; then
+            echo "a force with no reason should still be refused, got $code"; exit 1
+          fi
+          sentinel readiness --force --reason "Stage 1 audit booked; the board accepted the remaining gaps in writing."
+          echo "the override was accepted and recorded"
+
+      - name: After remediation the same gate must pass
+        run: |
+          sentinel demo --profile ready
+          sentinel readiness
+          sentinel posture
+
+      - name: The API must answer, and its status must follow the gate
+        run: |
+          nohup sentinel serve --host 127.0.0.1 --port 8000 > api.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8000/health > /dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8000/health || { cat api.log; exit 1; }
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/api/v1/readiness)
+          if [ "$code" != "200" ]; then
+            echo "expected 200 from a ready ISMS, got $code"; exit 1
+          fi
+          # And the reverse: the same URL must report a conflict once the gaps
+          # are back, so a monitoring check can be a URL rather than a parser.
+          sentinel demo --profile gaps
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000/api/v1/readiness)
+          if [ "$code" != "409" ]; then
+            echo "expected 409 from an ISMS with gaps, got $code"; exit 1
+          fi
+          echo "the API's status follows the gate"
+
+      - name: Upload the documents and the API log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: assessment-artifacts
+          path: |
+            data/exports/*.md
+            data/exports/*.csv
+            api.log
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # 5. Container build -- built and smoke-tested, never pushed.
+  # ---------------------------------------------------------------------------
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: iso27001-cybersecurity-copilot:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke-test the image
+        run: |
+          docker run --rm iso27001-cybersecurity-copilot:ci --version
+          docker run --rm iso27001-cybersecurity-copilot:ci catalogue --theme people
+          # The image must not run as root.
+          test "$(docker run --rm --entrypoint id iso27001-cybersecurity-copilot:ci -u)" != "0"
+          # And the catalogue it carries must not be writable by the user that
+          # reads it: an SoA whose control set can be edited at run time is an
+          # SoA that can be edited without a deployment.
+          ! docker run --rm --entrypoint sh iso27001-cybersecurity-copilot:ci \
+              -c 'echo x >> /app/catalogue/catalogue.yaml' 2>/dev/null
+          echo "image runs as a non-root user and cannot edit its own catalogue"

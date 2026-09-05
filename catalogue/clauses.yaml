@@ -1,0 +1,263 @@
+# ===========================================================================
+# The management-system requirements, clauses 4 to 10.
+#
+# Annex A gets the attention. The certificate is granted against these.
+#
+# An organisation can implement all 93 Annex A controls and still fail its
+# stage 2 audit for having no internal audit programme, no management review,
+# or a scope statement nobody has written down. A tool that tracks only Annex A
+# will tell that organisation it is ready. This file is why this one does not.
+#
+# The identifiers reference ISO/IEC 27001:2022 clauses. The titles and intents
+# are written for this project and are NOT the text of the standard; see
+# docs/catalogue.md.
+#
+# `mandatory_for_certification` marks the requirements whose absence the
+# readiness gate treats as blocking rather than as a finding to schedule.
+# ===========================================================================
+requirements:
+  # --- 4. Context of the organisation ------------------------------------
+  - id: C.4.1
+    clause: "4.1"
+    title: Internal and external issues identified
+    intent: >-
+      The organisation has determined the issues, internal and external, that
+      affect its ability to achieve the outcomes it wants from its ISMS.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  - id: C.4.2
+    clause: "4.2"
+    title: Interested parties and their requirements
+    intent: >-
+      The parties relevant to the ISMS are identified, along with which of
+      their requirements the ISMS will address -- customers, regulators,
+      insurers, staff.
+    evidence_expected: [record]
+    mandatory_for_certification: true
+
+  - id: C.4.3
+    clause: "4.3"
+    title: Documented ISMS scope
+    intent: >-
+      The boundaries of the ISMS are determined and documented. Certification
+      is granted against a scope, not against a company, which is why this
+      statement appears on every export this tool produces.
+    evidence_expected: [record, policy]
+    mandatory_for_certification: true
+
+  - id: C.4.4
+    clause: "4.4"
+    title: The ISMS exists and is maintained
+    intent: >-
+      The management system and its processes are established, implemented,
+      maintained and continually improved -- not designed once and filed.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  # --- 5. Leadership ------------------------------------------------------
+  - id: C.5.1
+    clause: "5.1"
+    title: Demonstrated leadership and commitment
+    intent: >-
+      Top management demonstrates leadership by making resources available,
+      setting direction and holding people to the ISMS -- demonstrably, not
+      by assertion.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  - id: C.5.2
+    clause: "5.2"
+    title: Approved information security policy
+    intent: >-
+      An information security policy exists, is appropriate to the
+      organisation, is approved by top management and is communicated.
+    evidence_expected: [policy, record]
+    mandatory_for_certification: true
+
+  - id: C.5.3
+    clause: "5.3"
+    title: Roles, responsibilities and authorities assigned
+    intent: >-
+      Responsibilities and authorities for the ISMS are assigned and
+      communicated, including who reports on its performance.
+    evidence_expected: [record]
+    mandatory_for_certification: true
+
+  # --- 6. Planning --------------------------------------------------------
+  - id: C.6.1.1
+    clause: "6.1.1"
+    title: Risks and opportunities addressed in planning
+    intent: >-
+      Planning for the ISMS takes account of the issues and requirements
+      already identified, and determines what has to be addressed.
+    evidence_expected: [record]
+    mandatory_for_certification: true
+
+  - id: C.6.1.2
+    clause: "6.1.2"
+    title: Defined risk assessment process
+    intent: >-
+      A documented risk assessment process exists, with criteria for accepting
+      risk and for performing assessments, and it produces consistent, valid
+      and comparable results.
+    evidence_expected: [procedure, record]
+    mandatory_for_certification: true
+
+  - id: C.6.1.3
+    clause: "6.1.3"
+    title: Risk treatment process and Statement of Applicability
+    intent: >-
+      A risk treatment process selects options and controls, compares them
+      against Annex A to check nothing has been overlooked, and produces a
+      Statement of Applicability giving the justification for every inclusion
+      and every exclusion.
+    evidence_expected: [procedure, record, report]
+    mandatory_for_certification: true
+
+  - id: C.6.2
+    clause: "6.2"
+    title: Security objectives and plans to reach them
+    intent: >-
+      Measurable information security objectives are set at relevant levels,
+      with plans saying what will be done, by whom, with what, and by when.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  - id: C.6.3
+    clause: "6.3"
+    title: Planning of changes
+    intent: >-
+      Changes to the ISMS are carried out in a planned manner rather than
+      absorbed as they arrive.
+    evidence_expected: [record]
+    mandatory_for_certification: false
+
+  # --- 7. Support ---------------------------------------------------------
+  - id: C.7.1
+    clause: "7.1"
+    title: Resources determined and provided
+    intent: >-
+      The resources needed for the ISMS are determined and actually made
+      available.
+    evidence_expected: [record]
+    mandatory_for_certification: true
+
+  - id: C.7.2
+    clause: "7.2"
+    title: Competence of people doing the work
+    intent: >-
+      The people whose work affects information security performance are
+      competent on the basis of education, training or experience, and that
+      competence is evidenced.
+    evidence_expected: [record, certificate]
+    mandatory_for_certification: true
+
+  - id: C.7.3
+    clause: "7.3"
+    title: Awareness of the policy and of consequences
+    intent: >-
+      People working under the organisation's control are aware of the
+      security policy, their contribution to the ISMS, and what not conforming
+      would mean.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  - id: C.7.4
+    clause: "7.4"
+    title: Internal and external communication determined
+    intent: >-
+      The organisation has decided what it communicates about information
+      security, when, to whom and by what means.
+    evidence_expected: [record, procedure]
+    mandatory_for_certification: false
+
+  - id: C.7.5
+    clause: "7.5"
+    title: Documented information controlled
+    intent: >-
+      The documentation the ISMS requires exists, is identified, is reviewed
+      and approved, and is controlled -- available where needed and protected
+      from improper change.
+    evidence_expected: [procedure, record]
+    mandatory_for_certification: true
+
+  # --- 8. Operation -------------------------------------------------------
+  - id: C.8.1
+    clause: "8.1"
+    title: Operational planning and control
+    intent: >-
+      The processes needed to meet the requirements are planned, implemented
+      and controlled, and their operation is kept as documented information to
+      the extent needed to have confidence they ran as planned.
+    evidence_expected: [record, procedure]
+    mandatory_for_certification: true
+
+  - id: C.8.2
+    clause: "8.2"
+    title: Risk assessments performed and retained
+    intent: >-
+      Risk assessments are performed at planned intervals and when significant
+      changes occur, and their results are kept.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  - id: C.8.3
+    clause: "8.3"
+    title: Risk treatment plan implemented
+    intent: >-
+      The risk treatment plan is implemented, and the results of that
+      implementation are kept -- a plan with no record of execution is a
+      document, not a treatment.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  # --- 9. Performance evaluation -----------------------------------------
+  - id: C.9.1
+    clause: "9.1"
+    title: Monitoring, measurement, analysis and evaluation
+    intent: >-
+      What needs monitoring is determined, along with the methods, who does
+      it and when, and the results are evaluated rather than merely collected.
+    evidence_expected: [report, record]
+    mandatory_for_certification: true
+
+  - id: C.9.2
+    clause: "9.2"
+    title: Internal audit programme
+    intent: >-
+      Internal audits are conducted at planned intervals by auditors whose
+      objectivity is protected, covering both the organisation's own
+      requirements and the standard's, with the results reported to management.
+    evidence_expected: [report, record]
+    mandatory_for_certification: true
+
+  - id: C.9.3
+    clause: "9.3"
+    title: Management review
+    intent: >-
+      Top management reviews the ISMS at planned intervals, considering
+      audit results, performance, feedback and opportunities for improvement,
+      and the review produces decisions that are recorded.
+    evidence_expected: [record, report]
+    mandatory_for_certification: true
+
+  # --- 10. Improvement ----------------------------------------------------
+  - id: C.10.1
+    clause: "10.1"
+    title: Continual improvement
+    intent: >-
+      The suitability, adequacy and effectiveness of the ISMS are continually
+      improved.
+    evidence_expected: [record]
+    mandatory_for_certification: false
+
+  - id: C.10.2
+    clause: "10.2"
+    title: Nonconformity and corrective action
+    intent: >-
+      Nonconformities are reacted to, their causes are examined, corrective
+      action is taken and its effectiveness is reviewed -- with records of
+      both the nonconformity and what was done about it.
+    evidence_expected: [record, ticket]
+    mandatory_for_certification: true

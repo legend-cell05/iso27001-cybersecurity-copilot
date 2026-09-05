@@ -1,0 +1,102 @@
+# =============================================================================
+# Local stack: PostgreSQL, one assessment run, and the read-only API.
+#
+#   cp .env.example .env
+#   docker compose up --build
+#
+# The `assess` service seeds the simulated organisation, runs an assessment,
+# writes the documents and exits. Its exit code is the gate's verdict: 3 when
+# the ISMS is not ready, which for the default `gaps` profile it is not.
+#
+#   docker compose run --rm assess demo --profile ready
+#   docker compose run --rm assess readiness
+#   docker compose run --rm assess export
+#
+# No credential is hard-coded: every value comes from .env, which is
+# git-ignored. The defaults after `:-` are obviously-local placeholders.
+# =============================================================================
+
+x-database-env: &database-env
+  SENTINEL_DB_HOST: postgres
+  SENTINEL_DB_PORT: 5432
+  SENTINEL_DB_NAME: ${SENTINEL_DB_NAME:-sentinel}
+  SENTINEL_DB_USER: ${SENTINEL_DB_USER:-sentinel_app}
+  SENTINEL_DB_PASSWORD: ${SENTINEL_DB_PASSWORD:-change_me_local_only}
+  SENTINEL_SCHEMA: ${SENTINEL_SCHEMA:-isms}
+  SENTINEL_ORGANISATION: ${SENTINEL_ORGANISATION:-Meridian Logistics SAS}
+  SENTINEL_LOG_LEVEL: ${SENTINEL_LOG_LEVEL:-INFO}
+  SENTINEL_LOG_FORMAT: ${SENTINEL_LOG_FORMAT:-text}
+  SENTINEL_DATA_DIR: /app/data
+  SENTINEL_CATALOGUE_DIR: /app/catalogue
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sentinel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${SENTINEL_DB_NAME:-sentinel}
+      POSTGRES_USER: ${SENTINEL_DB_USER:-sentinel_app}
+      POSTGRES_PASSWORD: ${SENTINEL_DB_PASSWORD:-change_me_local_only}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "${SENTINEL_DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SENTINEL_DB_USER:-sentinel_app} -d ${SENTINEL_DB_NAME:-sentinel}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  assess:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinel-assess
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *database-env
+      SENTINEL_RISK_APPETITE: ${SENTINEL_RISK_APPETITE:-6}
+      SENTINEL_RANDOM_SEED: ${SENTINEL_RANDOM_SEED:-20260927}
+    volumes:
+      # The documents belong on the host: they are what a person reads, sends
+      # to an auditor, and keeps.
+      - ./data:/app/data
+    command: ["cycle", "--profile", "${SENTINEL_DEMO_PROFILE:-gaps}"]
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinel-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      assess:
+        # `service_completed_successfully` would never be satisfied for the
+        # `gaps` profile: the cycle exits 3 on purpose, because the ISMS is
+        # not ready. The API is useful precisely then, so it starts anyway.
+        condition: service_started
+    environment:
+      <<: *database-env
+    ports:
+      - "${SENTINEL_API_PORT:-8000}:8000"
+    volumes:
+      - ./data:/app/data
+    command: ["serve", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,110 @@
+# ===========================================================================
+# Annex A theme 6 -- people controls (A.6.1 to A.6.8).
+#
+# The identifiers reference ISO/IEC 27001:2022 Annex A. The titles and intents
+# below are written for this project and are NOT the text of the standard; see
+# docs/catalogue.md.
+#
+# Every control here depends on a person doing something, which is why the
+# evidence tends to be records of training and signatures rather than
+# screenshots of a configuration.
+# ===========================================================================
+theme: people
+controls:
+  - id: A.6.1
+    title: Screening before employment
+    intent: >-
+      Background checks on candidates are carried out before they start,
+      proportionate to what they will have access to and to what the law
+      allows.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: human_resources
+    evidence_expected: [record]
+    evidence_valid_days: 365
+
+  - id: A.6.2
+    title: Security terms in employment contracts
+    intent: >-
+      Employment agreements state the security responsibilities of both the
+      organisation and the person signing.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: human_resources
+    evidence_expected: [contract, record]
+    evidence_valid_days: 365
+
+  - id: A.6.3
+    title: Security awareness and training
+    intent: >-
+      Staff and relevant contractors receive awareness, education and
+      training suited to their role, and it is repeated as policies change.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: human_resources
+    evidence_expected: [record, report]
+    evidence_valid_days: 365
+
+  - id: A.6.4
+    title: Disciplinary process
+    intent: >-
+      A defined, communicated process exists for acting on a security policy
+      violation, so that consequences are consistent rather than improvised.
+    control_types: [preventive, corrective]
+    properties: [C, I, A]
+    function: protect
+    capability: human_resources
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.6.5
+    title: Responsibilities after leaving or changing role
+    intent: >-
+      Security responsibilities that survive a departure or a move are
+      defined, communicated and enforced.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: human_resources
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 365
+
+  - id: A.6.6
+    title: Confidentiality agreements
+    intent: >-
+      Confidentiality or non-disclosure agreements reflecting the
+      organisation's needs are identified, documented, signed and reviewed.
+    control_types: [preventive]
+    properties: [C]
+    function: protect
+    capability: human_resources
+    evidence_expected: [contract, record]
+    evidence_valid_days: 365
+
+  - id: A.6.7
+    title: Remote working
+    intent: >-
+      Security measures are applied when people work outside the
+      organisation's premises, including on their own networks.
+    control_types: [preventive]
+    properties: [C, I, A]
+    function: protect
+    capability: endpoint_security
+    evidence_expected: [policy, record]
+    evidence_valid_days: 365
+
+  - id: A.6.8
+    title: Reporting of security events
+    intent: >-
+      There is a route for anyone to report a security event promptly, and
+      people know what it is and that using it is safe.
+    control_types: [detective]
+    properties: [C, I, A]
+    function: detect
+    capability: incident_management
+    evidence_expected: [procedure, record]
+    evidence_valid_days: 180
+
