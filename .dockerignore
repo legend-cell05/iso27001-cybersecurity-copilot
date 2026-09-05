@@ -1,0 +1,33 @@
+# Secrets and local state
+.env
+.env.*
+!.env.example
+secrets/
+
+# Generated documents and evidence -- rebuilt inside the container
+data/exports/*
+data/evidence/*
+
+# Repository furniture the image does not need
+.git/
+.github/
+docs/
+tests/
+*.md
+!README.md
+
+# Python and tooling caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+junit-*.xml
+build/
+dist/
+*.egg-info/
