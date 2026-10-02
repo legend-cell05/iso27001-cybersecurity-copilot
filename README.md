@@ -674,7 +674,7 @@ catalogue, and an explicit list of what is *not* implemented. Full detail:
 
 ### Author
 
-**Ayman Bara** — BUT Informatique student, looking for an alternance in
+**Ayman Bara** — Second year engineering student at EPISEN, looking for an alternance in
 information systems, GRC, cybersecurity or data engineering.
 
 This is a personal portfolio project. It is not a client deliverable, it
